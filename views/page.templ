@@ -1,0 +1,36 @@
+package views
+
+import "github.com/markbates/goth"
+import "fmt"
+
+templ Page(nav bool, user goth.User) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<title>Car Show</title>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="stylesheet" href="/public/styles.css"/>
+			<script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+		</head>
+		<body>
+			if nav {
+				<nav class="flex w-full bg-gray-800 text-blue-300 text-xl p-4">
+					<a href="/" class="ml-6">Home</a>
+					<a href="/cars" class="ml-6">Cars</a>
+					if user.Name != "" {
+						<a
+							href={ templ.SafeURL(fmt.Sprintf("/auth/logout/%s", user.Provider)) }
+							class="ml-auto text-red-400"
+						>
+							Logout
+						</a>
+						<span class="ml-6">Welcome, { user.Name }</span>
+						<img src={ user.AvatarURL } class="w-8 h-8 rounded-full ml-2"/>
+					}
+				</nav>
+			}
+			{ children... }
+		</body>
+	</html>
+}
